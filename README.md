@@ -7,14 +7,14 @@
   Python 3.7 or newer
   Free disk space: 100GB
 
-##### Data Preparation
+# Data Preparation
 
-### Upload data on the cloud and unzip
+## Upload data on the cloud and unzip
 import torch
 !wget https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2021-07-26/document_parses.tar.gz
 !tar -xf document_parses.tar.gz
 
-### Parse the data
+## Parse the data
 import json
 import os
 text1=[]
