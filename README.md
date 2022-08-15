@@ -10,8 +10,11 @@
 # Data Preparation
 
 ## Upload data on the cloud and unzip
+
 import torch
+
 !wget https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2021-07-26/document_parses.tar.gz
+
 !tar -xf document_parses.tar.gz
 
 ## Parse the data
