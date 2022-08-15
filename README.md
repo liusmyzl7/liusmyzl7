@@ -37,7 +37,7 @@ for jsonfile in os.listdir("/content/document_parses/pmc_json")[:10]:
 comtext=text1+text3
 comstr = " ".join('%s' %a for a in comtext)
 
-# Preprocess
+## Preprocess
 import re
 from collections import Counter
 
