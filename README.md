@@ -18,6 +18,7 @@ import torch
 !tar -xf document_parses.tar.gz
 
 ## Parse the data
+
 import json
 import os
 text1=[]
@@ -41,7 +42,9 @@ comtext=text1+text3
 comstr = " ".join('%s' %a for a in comtext)
 
 ## Preprocess
+
 import re
+
 from collections import Counter
 
 def preprocess(text):
@@ -64,15 +67,18 @@ def preprocess(text):
     return text
     
 ### Output a list of text
+
 text=preprocess(comstr)
 
 # Tokenization
 
 ## Use split()
+
 a=text.split(" ")
 print(a)
 
 ## Use NLTK
+
 !pip install nltk
 
 import nltk
@@ -82,13 +88,17 @@ b=word_tokenize(text)
 print(b)
 
 ## Use Byte-Pair Encoding (BPE)
+
 #Statistics the frequency of adjacent character pairs
+
 import re, collections
+
 def get_vocab(comstr):
     vocab = collections.defaultdict(int)
     for word in comstr.strip().split():
         vocab[' '.join(list(word)) + ' </w>'] += 1
     return vocab
+    
 print(get_vocab(comstr))
 
 import re, collections
