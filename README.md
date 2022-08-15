@@ -37,7 +37,7 @@ for jsonfile in os.listdir("/content/document_parses/pmc_json")[:10]:
 comtext=text1+text3
 comstr = " ".join('%s' %a for a in comtext)
 
-### Preprocess
+# Preprocess
 import re
 from collections import Counter
 
@@ -63,13 +63,13 @@ def preprocess(text):
 ### Output a list of text
 text=preprocess(comstr)
 
-##### Tokenization
+# Tokenization
 
-### Use split()
+## Use split()
 a=text.split(" ")
 print(a)
 
-### Use NLTK
+## Use NLTK
 !pip install nltk
 
 import nltk
@@ -78,7 +78,7 @@ nltk.download('punkt')
 b=word_tokenize(text)
 print(b)
 
-### Use Byte-Pair Encoding (BPE)
+## Use Byte-Pair Encoding (BPE)
 #Statistics the frequency of adjacent character pairs
 import re, collections
 def get_vocab(comstr):
@@ -88,7 +88,6 @@ def get_vocab(comstr):
     return vocab
 print(get_vocab(comstr))
 
-#BPE
 import re, collections
 
 def get_stats(vocab):
@@ -118,12 +117,13 @@ for i in range(num_merges):
     vocab = merge_vocab(best, vocab)
     print(best)
     
-# reference: [1] https://leimao.github.io/blog/Byte-Pair-Encoding/ 
-# [2] https://blog.csdn.net/qq_41020633/article/details/123622667?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522165953811016782388024467%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=165953811016782388024467&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-5-123622667-null-null.142^v39^pc_rank_34_2&utm_term=BPE&spm=1018.2226.3001.4187
+##### reference: [1] https://leimao.github.io/blog/Byte-Pair-Encoding/ 
+##### [2] https://blog.csdn.net/qq_41020633/article/details/123622667?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522165953811016782388024467%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=165953811016782388024467&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-5-123622667-null-null.142^v39^pc_rank_34_2&utm_term=BPE&spm=1018.2226.3001.4187
 
-##### Build Word Representations
 
-### Use N-gram Language Modeling
+# Build Word Representations
+
+## Use N-gram Language Modeling
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -132,9 +132,9 @@ CONTEXT_SIZE = 2
 EMBEDDING_DIM = 10
 
 test_sentence = a
-# we should tokenize the input, but we will ignore that for now
-# build a list of tuples.
-# Each tuple is ([ a_i-CONTEXT_SIZE, ..., a_i-1 ], target word)
+### we should tokenize the input, but we will ignore that for now
+### build a list of tuples.
+### Each tuple is ([ a_i-CONTEXT_SIZE, ..., a_i-1 ], target word)
 ngrams = [
     (
         [test_sentence[i - j - 1] for j in range(CONTEXT_SIZE)],
@@ -142,7 +142,7 @@ ngrams = [
     )
     for i in range(CONTEXT_SIZE, len(test_sentence))
 ]
-# Print the first 3, just so you can see what they look like.
+### Print the first 3, just so you can see what they look like.
 print(ngrams[:3])
 
 vocab = set(test_sentence)
@@ -198,7 +198,7 @@ for epoch in range(10):
     losses.append(total_loss)
 print(losses)  # The loss decreased every iteration over the training data!
 
-# To get the embedding of a particular word, e.g. "the"
+### To get the embedding of a particular word, e.g. "the"
 print(model.embeddings.weight[a_to_ix["the"]])
 
 alphabet_upr = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
@@ -226,9 +226,9 @@ for counter in range(0,len(a)):
     else:
      break
 df
-# reference: https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
+##### reference: https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html
 
-### Use Skip-gram with Negative Sampling
+## Use Skip-gram with Negative Sampling
 import torch
 !wget https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2021-07-26/document_parses.tar.gz
 !tar -xf document_parses.tar.gz
@@ -253,7 +253,6 @@ for jsonfile in os.listdir("/content/document_parses/pmc_json")[:20000]:
             text3 = text3+text2
 
 comtext=text1+text3
-#print(comtext)
 import re
 from collections import Counter
 
@@ -280,15 +279,14 @@ def preprocess(text):
     word_counts = Counter(words)
     trimmed_words = [word for word in words if word_counts[word] > 5]
     return trimmed_words
-    #return text
-# get vocabulary 
+### get vocabulary 
 text = " ".join('%s' %a for a in comtext)
 words = preprocess(text)
 #print(text[:100])
 #print(words[:30])
 print("Total # of words: {}".format(len(words)))
 print("# of unique words: {}".format(len(set(words))))
-# create dictionary
+### create dictionary
 def create_lookup_tables(words):
     """
     Create lookup tables for vocabulary
@@ -304,7 +302,7 @@ def create_lookup_tables(words):
 vocab_to_int, int_to_vocab = create_lookup_tables(words)
 int_words = [vocab_to_int[word] for word in words]
 print(vocab_to_int)
-# Perform Word Subsampling
+### Perform Word Subsampling
 import random
 import numpy as np
 
@@ -324,7 +322,7 @@ train_words = subsample_words(int_words)
 print(len(int_words))
 print(len(train_words))
 print(len(train_words)/len(int_words))
-# Generate Context Targets
+### Generate Context Targets
 import random
 def get_target(words, idx, max_window_size=5):
     R = random.randint(1, max_window_size)
@@ -339,7 +337,7 @@ idx=5 # word index of interest
 for _ in range(5):
     target = get_target(int_text, idx=idx, max_window_size=5)
     print('Target: ', target)  # you should get some indices around the idx
-# Generate Batches
+### Generate Batches
 def get_batches(words, batch_size, max_window_size=5):
     # only full batches
     n_batches = len(words)//batch_size
@@ -361,27 +359,27 @@ x,y = next(get_batches(int_text, batch_size=4, max_window_size=5))
 
 print('x\n', x)
 print('y\n', y)
-# Define COSINE SIMILARITY Function for Validation Metric
+### Define COSINE SIMILARITY Function for Validation Metric
 def cosine_similarity(embedding, n_valid_words=16, valid_window=100):
     """ Returns the cosine similarity of validation words with words in the embedding matrix.
         embedding: PyTorch embedding module
         n_valid_words: # of validation words (recommended to have even numbers)
     """
     all_embeddings = embedding.weight  # (n_vocab, n_embed) 
-  # sim = (a . b) / |a||b|
+  ### sim = (a . b) / |a||b|
     magnitudes = all_embeddings.pow(2).sum(dim=1).sqrt().unsqueeze(0) # (1, n_vocab)
   
-  # Pick validation words from 2 ranges: (0, window): common words & (1000, 1000+window): uncommon words 
+  ### Pick validation words from 2 ranges: (0, window): common words & (1000, 1000+window): uncommon words 
     valid_words = random.sample(range(valid_window), n_valid_words//2) + random.sample(range(1000, 1000+valid_window), n_valid_words//2)
     valid_words = torch.LongTensor(np.array(valid_words)).to(device) # (n_valid_words, 1)
 
     valid_embeddings = embedding(valid_words) # (n_valid_words, n_embed)
-  # (n_valid_words, n_embed) * (n_embed, n_vocab) --> (n_valid_words, n_vocab) / 1, n_vocab)
+  ### (n_valid_words, n_embed) * (n_embed, n_vocab) --> (n_valid_words, n_vocab) / 1, n_vocab)
     similarities = torch.mm(valid_embeddings, all_embeddings.t()) / magnitudes  # (n_valid_words, n_vocab)
   
     return valid_words, similarities
     
-# Define SkipGram model with Negative Sampling
+### Define SkipGram model with Negative Sampling
 import torch
 from torch import nn
 import torch.optim as optim
@@ -432,7 +430,7 @@ class SkipGramNeg(nn.Module):
         
         return noise_vectors
         
-# Define Loss Class
+### Define Loss Class
 class NegativeSamplingLoss(nn.Module):
     def __init__(self):
         super().__init__()
@@ -456,15 +454,15 @@ class NegativeSamplingLoss(nn.Module):
 
         return -(out_loss + noise_loss).mean()  # average batch loss
 
-# Define Noise Distribution
-# As defined in the paper by Mikolov et all.
+### Define Noise Distribution
+### As defined in the paper by Mikolov et all.
 freq = Counter(int_words)
 freq_ratio = {word:cnt/len(vocab_to_int) for word, cnt in freq.items()}        
 freq_ratio = np.array(sorted(freq_ratio.values(), reverse=True))
 unigram_dist = freq_ratio / freq_ratio.sum() 
 noise_dist = torch.from_numpy(unigram_dist**0.75 / np.sum(unigram_dist**0.75))
 
-# Define Model, Loss, & Optimizer
+### Define Model, Loss, & Optimizer
 from torch import optim
 embedding_dim = 300
 model = SkipGramNeg(len(vocab_to_int), 
@@ -473,7 +471,7 @@ model = SkipGramNeg(len(vocab_to_int),
 criterion = NegativeSamplingLoss()
 optimizer = optim.Adam(model.parameters(), lr = 0.003)
 
-# Train!!
+### Train!!
 device = 'cuda' if torch.cuda.is_available else 'cpu'
 import torch
 print(torch.cuda.is_available())
@@ -524,19 +522,19 @@ train_skipgram(model,
        int_words,
        n_negative_samples=5)
 
-# Reference: [1] https://github.com/lukysummer/SkipGram_with_NegativeSampling_Pytorch [2] http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/
+##### Reference: [1] https://github.com/lukysummer/SkipGram_with_NegativeSampling_Pytorch [2] http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/
 
-##### Explore the Word Representations
+# Explore the Word Representations
 
-### Visualise the word representations by t-SNE
+## Visualise the word representations by t-SNE
 %matplotlib inline
 %config InlineBackend.figure_format = 'retina'
 
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
-# By input embeddings
-# getting embeddings from the embedding layer of our model, by name
+### By input embeddings
+### getting embeddings from the embedding layer of our model, by name
 embeddings = model.in_embed.weight.to('cpu').data.numpy()
 
 viz_words = 1000
@@ -548,7 +546,7 @@ for idx in range(viz_words):
     plt.scatter(*embed_tsne[idx, :], color='steelblue')
     plt.annotate(int_to_vocab[idx], (embed_tsne[idx, 0], embed_tsne[idx, 1]), alpha=0.7)
 
-# getting embeddings from the embedding layer of our model, by name
+### getting embeddings from the embedding layer of our model, by name
 embeddings = model.in_embed.weight.to('cpu').data.numpy()
 
 viz_words = 1000
@@ -560,7 +558,7 @@ for idx in range(viz_words):
     plt.scatter(*embed_tsne[idx, :], color='steelblue')
     plt.annotate(int_to_vocab[idx], (embed_tsne[idx, 0], embed_tsne[idx, 1]), alpha=0.7)
 
-# getting output embeddings
+### getting output embeddings
 embeddings = model.out_embed.weight.to('cpu').data.numpy()
 
 viz_words = 1000
@@ -585,7 +583,7 @@ for idx in range(viz_words):
     plt.scatter(*embed_tsne[idx, :])
     plt.annotate(int_to_vocab[idx], (embed_tsne[idx, 0], embed_tsne[idx, 1]), alpha=0.7)
 
-# Reference: https://github.com/lukysummer/SkipGram_with_NegativeSampling_Pytorch
+##### Reference: https://github.com/lukysummer/SkipGram_with_NegativeSampling_Pytorch
 
 
 
